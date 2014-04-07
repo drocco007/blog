@@ -10,7 +10,7 @@ setup(
     author_email="drocco@gmail.com",
     entry_points="""
         [console_scripts]
-        serve_example = base_app:main
+        serve_example = base_app.main:main
         enumerate_extensions = demo:enumerate_template_extensions
 
         [templates]

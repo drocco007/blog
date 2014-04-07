@@ -3,12 +3,6 @@ from pkg_resources import (resource_exists as base_resource_exists,
 from stevedore import NamedExtensionManager
 
 
-template_modules = ['client_custom', 'shared', 'base']
-
-extension_manager = NamedExtensionManager('templates', template_modules,
-                                          name_order=True)
-
-
 def resource_exists(resource_path, target):
     """Safe wrapper around pkg_resources.resource_exists
 
@@ -23,22 +17,29 @@ def resource_exists(resource_path, target):
         return False
 
 
-def template(name):
-    package_suffix, dot, basename = name.rpartition('.')
-    target_file = '{}.html'.format(basename)
+class TemplateResolver(object):
+    def __init__(self, template_modules, namespace='templates'):
+        self.template_modules = template_modules
+        self.extension_manager = NamedExtensionManager(namespace,
+                                                       template_modules,
+                                                       name_order=True)
 
-    if package_suffix:
-        join = '.'.join
-    else:
-        join = lambda take_first: take_first[0]
+    def __call__(self, name):
+        package_suffix, dot, basename = name.rpartition('.')
+        target_file = '{}.html'.format(basename)
 
-    for extension in extension_manager.extensions:
-        target_package = join((extension.entry_point.module_name,
-                               package_suffix))
+        if package_suffix:
+            join = '.'.join
+        else:
+            join = lambda take_first: take_first[0]
 
-        if resource_exists(target_package, target_file):
-            return resource_filename(target_package, target_file)
-    else:
-        raise ValueError(
-            'Could not locate template {} in any loaded template module: {}'
-            .format(name, template_modules))
+        for extension in self.extension_manager.extensions:
+            target_package = join((extension.entry_point.module_name,
+                                   package_suffix))
+
+            if resource_exists(target_package, target_file):
+                return resource_filename(target_package, target_file)
+        else:
+            raise ValueError(
+                'Could not locate template {} in any loaded template module: {}'
+                .format(name, self.template_modules))
