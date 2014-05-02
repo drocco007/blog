@@ -4,7 +4,7 @@ from stevedore import ExtensionManager
 
 
 def enumerate_template_extensions():
-    logging.basicConfig(level=logging.DEBUG)
+    # logging.basicConfig(level=logging.DEBUG)
     manager = ExtensionManager('templates')
 
     print 'Extensions in namespace "templates":'

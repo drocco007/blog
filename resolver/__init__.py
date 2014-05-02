@@ -25,13 +25,7 @@ class TemplateResolver(object):
                                                        name_order=True)
 
     def __call__(self, name):
-        package_suffix, dot, basename = name.rpartition('.')
-        target_file = '{}.html'.format(basename)
-
-        if package_suffix:
-            join = '.'.join
-        else:
-            join = lambda take_first: take_first[0]
+        package_suffix, target_file, join = self._process_name(name)
 
         for extension in self.extension_manager.extensions:
             target_package = join((extension.entry_point.module_name,
@@ -41,5 +35,16 @@ class TemplateResolver(object):
                 return resource_filename(target_package, target_file)
         else:
             raise ValueError(
-                'Could not locate template {} in any loaded template module: {}'
-                .format(name, self.template_modules))
+                'Could not locate template "{}" in any loaded template '
+                'module: {}'.format(name, self.template_modules))
+
+    def _process_name(self, name):
+        package_suffix, dot, basename = name.rpartition('.')
+        target_file = '{}.html'.format(basename)
+
+        if package_suffix:
+            join_callable = '.'.join
+        else:
+            join_callable = lambda take_first: take_first[0]
+
+        return package_suffix, target_file, join_callable
