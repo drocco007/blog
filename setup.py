@@ -13,7 +13,7 @@ setup(
         serve_example = base_app.main:main
         enumerate_extensions = demo:enumerate_template_extensions
 
-        [templates]
+        [sweet_app.templates]
         base = base_app.templates
         shared = shared_lib.templates
         client_custom = client_custom.templates

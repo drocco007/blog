@@ -18,7 +18,7 @@ def resource_exists(resource_path, target):
 
 
 class TemplateResolver(object):
-    def __init__(self, template_modules, namespace='templates'):
+    def __init__(self, template_modules, namespace='sweet_app.templates'):
         self.template_modules = template_modules
         self.extension_manager = NamedExtensionManager(namespace,
                                                        template_modules,
