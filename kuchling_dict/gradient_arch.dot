@@ -1,0 +1,46 @@
+digraph G {
+    graph [rankdir = "TB" ranksep = 0.01];
+
+    node [shape=box style=filled color="#708BA6"
+          fillcolor="#A6D0DE" width="5in" fontname="Ubuntu"
+          penwidth=0.2];
+
+    {
+        rank=same;
+
+        "module1" [
+            width="1.5in";
+            label="Platform\nService"
+        ];
+
+        "blah" [
+            width="1.5in";
+            label="Platform\nService"
+        ];
+
+        "…" [
+            width="1.5in";
+            label="…"
+        ];
+    }
+
+    "core" [
+        label="Core Platform"
+    ];
+
+    "plugin" [
+        fillcolor="#C5E3ED"
+        label="Shared Plugin"
+    ];
+
+    "custom" [
+        fillcolor="#DCE9ED"
+        label="Single Client Specific"
+    ];
+
+    "custom" -> "plugin" [style=invis];
+    "plugin" -> "core" [style=invis];
+    "core" -> "module1" [style=invis];
+    "core" -> "blah" [style=invis];
+    "core" -> "…" [style=invis];
+}
