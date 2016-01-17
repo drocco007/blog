@@ -1,6 +1,10 @@
 Deck the Halls with Raspberry Pi
 --------------------------------
 
+.. raw:: html
+
+    <img src="pi_tree_1.jpg" style="float: right; padding: 0 0 1em 1em" />
+
 I'm continually on the lookout for ways to connect with my children, especially
 my eldest with whom I do not share naturally compatible interests. And while I
 expected to engage them easily over interesting technologies, reality has
@@ -75,17 +79,76 @@ For the LED mini project you'll need a few more parts: an LED, a `current
 limiting resistor <https://learn.sparkfun.com/tutorials/light-emitting-diodes-leds/leds-without-math>`_,
 some wire, and jumpers to attach to the Pi's GPIO pins. If you've got an old
 desktop computer lying around, you can scrounge the LED, wire, and jumpers from
-its indicator lights.
+its indicator lights. And you should probably get yourself a breadboard and
+jumper wires for it, but for this simple circuit I was content to solder the
+components directly.
 
 .. image:: led_with_jumper.jpg
     :align: center
 
+There are many excellent showcase and tutorial sites out there to spur project
+ideas and help you get going. We headed over to `Gordon's Projects Single LED
+tutorial <https://projects.drogon.net/raspberry-pi/gpio-examples/tux-crossing/gpio-examples-1-a-single-led/>`_,
+which takes you through the steps of getting the LED connected, and he does a
+nice job of breaking the narrative into digestible chunks and interspersing
+concept explanations to help orient beginners. (I still find the multiplicity
+of GPIO pin numbering and addressing schemes confusing, but I don't think
+that's Gordon's fault). Following his instructions we quickly had the LED
+wired up and connected to our Pi, which we then tested with the ``gpio``
+utility, prepackaged with Raspbian Jessie, that can be used to communicate with
+the Pi's GPIO bus. From the console we ran these commands:
 
 .. raw:: html
 
     <br/>
     <script src="https://gist.github.com/drocco007/ea84cd3710fd7b93088c.js?file=gpio_led.sh"></script>
     <br/>
+
+The pattern of these commands is ``gpio <subcommand> <pin> <value>``, so the
+first command translates roughly to “set GPIO user pin 0 to output mode.” GPIO
+pins can be configured for input or output, depending on whether you are
+reading from a sensor or driving a motor or LED. Once the pin was configured,
+we used the second command to turn the LED on and the third to turn it off.
+
+.. image:: led_on.jpg
+    :align: center
+
+With that working, the obvious next step was to control the LED using Python.
+There are several Python libraries for interacting with GPIO; we used `GPIO
+Zero, as documented in this tutorial
+<https://www.raspberrypi.org/learning/getting-started-with-gpio-zero/worksheet/>`_
+by the Raspberry Pi Foundation. Here's the same sequence of commands as above,
+but this time using Python:
+
+.. raw:: html
+
+    <br/>
+    <script src="https://gist.github.com/drocco007/ea84cd3710fd7b93088c.js?file=gpio_led_py.sh"></script>
+    <br/>
+
+Instead of interacting directly with the bus, GPIO Zero provides a number of
+utility classes for dealing with commonly used devices; unsurprisingly the
+``LED`` class is used to control an LED. The class encapsulates the fact that
+the LED is an output device and configures the pin to output mode for us when
+we instantiate the class.
+
+Why ``17``? That's the pin number according to the GPIO numbering scheme, which
+is equivalent to wiringPi user pin 0 (hence the ``0`` in the ``gpio`` commands
+above); both refer to physical pin 11 on the board. Ahem.
+
+Pin numbers aside, our next challenge was to make the LED blink, which we
+accomplished with this simple Python script:
+
+.. raw:: html
+
+    <br/>
+    <script src="https://gist.github.com/drocco007/ea84cd3710fd7b93088c.js?file=blink.py"></script>
+    <br/>
+
+
+.. image:: pi_tree_2.jpg
+    :align: center
+
 
 
 .. [#] I recommend the Raspberry Pi 2 Model B, but the older models should work
